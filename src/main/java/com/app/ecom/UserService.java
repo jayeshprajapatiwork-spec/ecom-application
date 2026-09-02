@@ -1,11 +1,10 @@
 package com.app.ecom;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -22,13 +21,19 @@ public class UserService {
         userList.add(user);
     }
 
-    public User fetchUser(Long id) {
-        for(User user : userList){
-            if(user.getId().equals(id)){
-                return user;
-            }
-        }
+    public Optional<User> fetchUser(Long id) {
+        return userList.stream()
+                .filter(user -> user.getId().equals(id)).findFirst();
+    }
 
-        return null;
+    public Boolean updateUser(Long id, User updatedUser) {
+        return userList.stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst()
+                .map(existingUser -> {
+                    existingUser.setFirstName(updatedUser.getFirstName());
+                    existingUser.setLastName(updatedUser.getLastName());
+                    return true;
+                }).orElse(false);
     }
 }
