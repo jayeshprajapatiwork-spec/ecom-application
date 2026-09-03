@@ -12,30 +12,31 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/api/users")
+    @GetMapping
     public ResponseEntity<List<User>> getAllUser() {
         return ResponseEntity.ok(userService.fetchAllUser());
         //return new ResponseEntity<>(userService.fetchAllUser(), HttpStatus.OK);
     }
 
-    @GetMapping("/api/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
         return userService.fetchUser(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/api/users")
+    @PostMapping
     public ResponseEntity<String> createUser(@RequestBody User user) {
         userService.createUser(user);
         return ResponseEntity.ok("User created");
     }
 
-    @PutMapping("/api/users/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody User updatedUser){
         Boolean updated = userService.updateUser(id, updatedUser);
         if (updated){
@@ -43,5 +44,4 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
-
 }
